@@ -1,4 +1,4 @@
-use crate::types::FocusEvent;
+use crate::types::Focused;
 
 mod i3;
 mod types;
@@ -9,6 +9,9 @@ fn main() {
     i3::listen(handle_current_focus);
 }
 
-fn handle_current_focus(event: FocusEvent) {
-    println!("Current focus: {} - {}", event.instance, event.title);
+fn handle_current_focus(event: Focused) {
+    match event {
+        Focused::Nothing => println!("Nothing focused"),
+        Focused::Window { class, title } => println!("Current focus: {} - {}", class, title),
+    }
 }

@@ -1,10 +1,11 @@
-use crate::types::FocusEvent;
 use i3ipc::event::inner::{WindowChange, WorkspaceChange};
 use i3ipc::event::{Event, WindowEventInfo, WorkspaceEventInfo};
-use i3ipc::reply::Node;
+use i3ipc::reply::{Node, NodeType};
 use i3ipc::{I3EventListener, Subscription};
 
-pub fn listen(cb: fn(FocusEvent)) {
+use crate::types::Focused;
+
+pub fn listen(cb: fn(Focused)) {
     let mut listener = I3EventListener::connect().unwrap();
 
     let subs = [Subscription::Window, Subscription::Workspace];
@@ -17,28 +18,29 @@ pub fn listen(cb: fn(FocusEvent)) {
             _ => unreachable!(),
         };
 
-        if focus_event.is_some() {
-            cb(focus_event.unwrap());
+        if let Some(e) = focus_event {
+            cb(e);
         }
     }
 }
 
-pub fn process_workspace_focus(e: WorkspaceEventInfo) -> Option<FocusEvent> {
+pub fn process_workspace_focus(e: WorkspaceEventInfo) -> Option<Focused> {
     if e.change != WorkspaceChange::Focus {
         return None;
     }
     match find_focused_node(e.current) {
-        None => None,
+        None => Some(Focused::Nothing),
+        Some(node) if node.nodetype == NodeType::Workspace => return Some(Focused::Nothing),
         Some(node) => {
-            return Some(FocusEvent::from(node));
+            return Some(Focused::from(node));
         }
     }
 }
 
-pub fn process_window_focus(e: WindowEventInfo) -> Option<FocusEvent> {
+pub fn process_window_focus(e: WindowEventInfo) -> Option<Focused> {
     match e.change {
-        WindowChange::Focus => Some(FocusEvent::from(e.container)),
-        WindowChange::Title => Some(FocusEvent::from(e.container)),
+        WindowChange::Focus | WindowChange::Title => Some(Focused::from(e.container)),
+        WindowChange::Close => Some(Focused::Nothing),
         _ => None,
     }
 }
