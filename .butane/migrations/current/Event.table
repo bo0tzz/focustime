@@ -1,0 +1,58 @@
+{
+  "name": "Event",
+  "columns": [
+    {
+      "name": "id",
+      "sqltype": {
+        "KnownId": {
+          "Ty": "BigInt"
+        }
+      },
+      "nullable": false,
+      "pk": true,
+      "auto": true,
+      "unique": false,
+      "default": null
+    },
+    {
+      "name": "event_type",
+      "sqltype": {
+        "Deferred": "CT:EventType"
+      },
+      "nullable": false,
+      "pk": false,
+      "auto": false,
+      "unique": false,
+      "default": null
+    },
+    {
+      "name": "timestamp",
+      "sqltype": {
+        "KnownId": {
+          "Ty": "Timestamp"
+        }
+      },
+      "nullable": false,
+      "pk": false,
+      "auto": false,
+      "unique": false,
+      "default": null
+    },
+    {
+      "name": "activity",
+      "sqltype": {
+        "Deferred": "PK:Activity"
+      },
+      "nullable": true,
+      "pk": false,
+      "auto": false,
+      "unique": false,
+      "default": null,
+      "reference": {
+        "Deferred": {
+          "Deferred": "PK:Activity"
+        }
+      }
+    }
+  ]
+}

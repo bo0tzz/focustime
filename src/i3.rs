@@ -5,7 +5,7 @@ use i3ipc::{I3EventListener, Subscription};
 
 use crate::types::Focused;
 
-pub fn listen(cb: fn(Focused)) {
+pub fn listen(cb: impl Fn(Focused)) {
     let mut listener = I3EventListener::connect().unwrap();
 
     let subs = [Subscription::Window, Subscription::Workspace];

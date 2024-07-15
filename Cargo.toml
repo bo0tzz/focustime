@@ -4,7 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+butane = { git = "https://github.com/bo0tzz/butane.git", rev = "93bbdb78d7c267a6121255dfa16fd459191b456a", features = ["datetime", "sqlite", "sqlite-bundled"] }
+chrono = "0.4.38"
 env_logger = "0.11.3"
 i3ipc = { git = "https://github.com/c0deaddict/i3ipc-rs.git", rev = "7aad30d162dc4fd8a649c959c9ad888a646e07f2" }
 log = "0.4.22"
-rusqlite = "0.31.0"

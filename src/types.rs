@@ -1,8 +1,13 @@
 use i3ipc::reply::{Node, WindowProperty};
 
+pub struct FocusedWindow {
+    pub class: String,
+    pub title: String,
+}
+
 pub enum Focused {
     Nothing,
-    Window { class: String, title: String },
+    Window(FocusedWindow),
 }
 
 impl From<Node> for Focused {
@@ -11,8 +16,10 @@ impl From<Node> for Focused {
         let class = props.get(&WindowProperty::Class).unwrap();
         let title = props.get(&WindowProperty::Title).unwrap();
         Focused::Window {
-            class: class.clone(),
-            title: title.clone(),
+            0: FocusedWindow {
+                class: class.clone(),
+                title: title.clone(),
+            },
         }
     }
 }
