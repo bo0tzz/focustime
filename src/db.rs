@@ -3,10 +3,31 @@ use crate::models::Activity;
 use butane::db::{Connection, ConnectionSpec};
 use butane::migrations::Migrations;
 use butane::{filter, DataObject, DataResult};
+use std::env::join_paths;
+
+fn load_dev_config() -> Option<ConnectionSpec> {
+    match ConnectionSpec::load(".butane/connection.json") {
+        Ok(s) => Some(s),
+        Err(_) => None,
+    }
+}
+
+fn load_prod_config() -> ConnectionSpec {
+    let home_dir = env!("HOME");
+    let path = join_paths([home_dir, "focustime.db"]).unwrap();
+    let conn_str = format!("sqlite://{}", path.into_string().unwrap());
+    ConnectionSpec {
+        backend_name: "sqlite".into(),
+        conn_str,
+    }
+}
+
+fn load_config() -> ConnectionSpec {
+    load_dev_config().unwrap_or_else(load_prod_config)
+}
 
 pub fn connect() -> Connection {
-    let mut connection =
-        butane::db::connect(&ConnectionSpec::load(".butane/connection.json").unwrap()).unwrap();
+    let mut connection = butane::db::connect(&load_config()).unwrap();
     let migrations = butane_migrations::get_migrations().unwrap();
     migrations.migrate(&mut connection).unwrap();
     connection
