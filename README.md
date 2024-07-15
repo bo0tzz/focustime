@@ -20,4 +20,5 @@ Events (referencing Activities) are aggregated into Spans (referencing Categorie
 ## Nice to have
 
 * Web frontend
-* Support for other backends
+* Support for other DE/WMs
+* Support for other storage backends (influxdb?)
