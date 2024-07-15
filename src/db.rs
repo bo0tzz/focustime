@@ -1,9 +1,11 @@
-use crate::butane_migrations;
-use crate::models::Activity;
+use std::path::PathBuf;
+
 use butane::db::{Connection, ConnectionSpec};
 use butane::migrations::Migrations;
 use butane::{filter, DataObject, DataResult};
-use std::env::join_paths;
+
+use crate::butane_migrations;
+use crate::models::Activity;
 
 fn load_dev_config() -> Option<ConnectionSpec> {
     match ConnectionSpec::load(".butane/connection.json") {
@@ -14,8 +16,12 @@ fn load_dev_config() -> Option<ConnectionSpec> {
 
 fn load_prod_config() -> ConnectionSpec {
     let home_dir = env!("HOME");
-    let path = join_paths([home_dir, "focustime.db"]).unwrap();
-    let conn_str = format!("sqlite://{}", path.into_string().unwrap());
+
+    let path: String = PathBuf::from_iter([home_dir, "focustime.db"])
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    let conn_str = format!("sqlite://{}", path);
     ConnectionSpec {
         backend_name: "sqlite".into(),
         conn_str,
