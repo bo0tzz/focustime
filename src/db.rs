@@ -21,10 +21,9 @@ fn load_prod_config() -> ConnectionSpec {
         .into_os_string()
         .into_string()
         .unwrap();
-    let conn_str = format!("sqlite://{}", path);
     ConnectionSpec {
         backend_name: "sqlite".into(),
-        conn_str,
+        conn_str: path,
     }
 }
 
